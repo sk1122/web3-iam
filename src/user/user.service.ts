@@ -19,12 +19,14 @@ export const findUserByAddress = async (address: string) => {
 
 export const createUser = async (data: Prisma.UserCreateInput) => {
     try {
+        console.log(data)
         const user = await prisma.user.create({
             data,
         });
 
         return user;
     } catch (e) {
+        logger.error(e)
         throw new GenericError(`UserNotCreated`, `Not able to create user, more info - ${JSON.stringify(e)}`);
     }
 };

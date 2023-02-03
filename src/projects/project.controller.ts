@@ -59,17 +59,12 @@ export class ProjectController {
         }
     };
 
-    public updateProject = async (req: Request<{}, {}, Project & { user: string, iamUsers: string[] }>, res: Response) => {
+    public updateProject = async (req: Request<{}, {}, Project & { iamUsers: string[] }>, res: Response) => {
         try {
             const result = await updateProject({
                 ...req.body,
-                user: {
-                    connect: {
-                        address: req.body.user,
-                    },
-                },
                 iamUsers: {
-                    connect: req.body.iamUsers.map(x => ({ id: x }))
+                    connect: req.body.iamUsers?.map(x => ({ id: x }))
                 }
             });
 

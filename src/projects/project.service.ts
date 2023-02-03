@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client"
 import { GenericError } from "../error"
+import { logger } from "../logger";
 import { prisma } from "../prisma"
 
 export const findProjectById = async (id: string) => {
@@ -66,6 +67,7 @@ export const updateProject = async (data: Prisma.ProjectUpdateInput) => {
 
         return project;
     } catch (e) {
+        logger.error(e)
         throw new GenericError(`ProjectNotUpdated`, `Not able to update project, more info - ${JSON.stringify(e)}`);
     }
 }

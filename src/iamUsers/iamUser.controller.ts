@@ -55,17 +55,12 @@ export class IamUserController {
     };
 
     public updateIamUser = async (
-        req: Request<{}, {}, IamUser & { project: string }>,
+        req: Request<{}, {}, IamUser>,
         res: Response
     ) => {
         try {
             const result = await updateIamUser({
-                ...req.body,
-                project: {
-                    connect: {
-                        id: req.body.project
-                    }
-                }
+                ...req.body
             });
 
             res.status(200).send({

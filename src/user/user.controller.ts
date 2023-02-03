@@ -28,7 +28,7 @@ export class UserController {
 
     public createUser = async (req: Request, res: Response) => {
         try {
-            if (req.query.projects) throw new GenericError(`ProjectsIsNotRequired`, 'projects is not required');
+            if (req.body.projects) throw new GenericError(`ProjectsIsNotRequired`, 'projects is not required');
 
             const user = await createUser(req.body);
 
