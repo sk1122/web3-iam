@@ -50,6 +50,7 @@ export const createIamUser = async (data: Prisma.IamUserCreateInput) => {
 
         return user
     } catch (e) {
+        console.log(e)
         throw new GenericError('IamUserNotCreated', `IamUser cannot be created - ${JSON.stringify(e)}`);
     }
 }

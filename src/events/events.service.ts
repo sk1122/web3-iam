@@ -50,6 +50,7 @@ export const createEvent = async (event: Prisma.EventCreateInput) => {
 
         return events;
     } catch (e) {
+        console.log(e)
         throw new GenericError('EventNotCreated', `Not able to create project, more info - ${JSON.stringify(e)}`);
     }
 }
