@@ -41,6 +41,8 @@ model IamUser {
   id          String       @id @default(uuid())
   address     String
   projectId   String
+  transactionExecuted Int @default(0)
+  transactionVolume Int @default(0)
   blockchains Blockchain[]
   project     Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
   events      Event[]

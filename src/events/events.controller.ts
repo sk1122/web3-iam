@@ -1,7 +1,9 @@
 import { Event } from '@prisma/client';
 import { Request, Response } from 'express';
 import { GenericError, handleError } from '../error';
+import { findIamUserById, updateIamUser } from '../iamUsers/iamUser.service';
 import { logger } from '../logger';
+import { queue } from './events.processor';
 import { createEvent, findEventByIamUser, findEventById, findEventByProject, updateEvent } from './events.service';
 
 export class EventController {
@@ -60,6 +62,22 @@ export class EventController {
                         },
                     },
                 });
+
+                if(req.body.name === 'transaction_executed') {
+                    // queue.add("transaction", {
+                    //     hash: (req.body.data as any).hash,
+                    //     iam: req.body.iamUser,
+                    //     id: result.id
+                    // })
+
+                    let iam = await findIamUserById(req.body.iamUser)
+
+                    await updateIamUser({
+                        id: iam.id,
+                        transactionExecuted: iam.transactionExecuted + 1,
+                        transactionVolume: 0
+                    })
+                }
             }
 
             res.status(200).send({

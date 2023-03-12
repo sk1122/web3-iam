@@ -5,6 +5,9 @@ import { prisma } from "../prisma";
 export const findIamUserById = async (id: string) => {
     try {
         const project = await prisma.iamUser.findUniqueOrThrow({
+            include: {
+                project: true
+            },
             where: {
                 id,
             },
@@ -21,6 +24,9 @@ export const findIamUserByProject = async (projectId: string, address?: string) 
 
         if(address) {
             const project = await prisma.iamUser.findFirstOrThrow({
+                include: {
+                    project: true
+                },
                 where: {
                     projectId,
                     address
@@ -31,6 +37,9 @@ export const findIamUserByProject = async (projectId: string, address?: string) 
         }
 
         const projects = await prisma.iamUser.findMany({
+            include: {
+                project: true
+            },
             where: {
                 projectId
             }
@@ -45,6 +54,9 @@ export const findIamUserByProject = async (projectId: string, address?: string) 
 export const createIamUser = async (data: Prisma.IamUserCreateInput) => {
     try {
         const user = await prisma.iamUser.create({
+            include: {
+                project: true
+            },
             data
         })
 
@@ -61,6 +73,9 @@ export const updateIamUser = async (data: Prisma.IamUserUpdateInput) => {
 
     try {
         const user = await prisma.iamUser.update({
+            include: {
+                project: true
+            },
             where: {
                 id: data.id as string
             },

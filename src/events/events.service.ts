@@ -5,6 +5,9 @@ import { prisma } from "../prisma";
 export const findEventById = async (id: string) => {
     try {
         const event = await prisma.event.findUniqueOrThrow({
+            include: {
+                project: true
+            },
             where: {
                 id,
             },
@@ -18,6 +21,9 @@ export const findEventById = async (id: string) => {
 export const findEventByProject = async (project: string) => {
     try {
         const events = await prisma.event.findMany({
+            include: {
+                project: true
+            },
             where: {
                 projectId: project
             },
@@ -31,6 +37,9 @@ export const findEventByProject = async (project: string) => {
 export const findEventByIamUser = async (iamUser: string) => {
     try {
         const events = await prisma.event.findMany({
+            include: {
+                project: true
+            },
             where: {
                 iamUserId: iamUser,
             },
