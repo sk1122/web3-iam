@@ -6,4 +6,4 @@ export const eventsRouter = Router();
 const eventController = new EventController();
 
 eventsRouter.get('/', isAuthenticated, (req, res) => eventController.findEvent(req, res));
-eventsRouter.post('/', isAuthenticated, (req, res) => eventController.createEvent(req, res));
+eventsRouter.post('/', (req, res) => eventController.createEvent(req, res));
