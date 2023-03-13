@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 import { GenericError, handleError } from '../error';
 import { findIamUserById, updateIamUser } from '../iamUsers/iamUser.service';
 import { logger } from '../logger';
-import { queue } from './events.processor';
 import { createEvent, findEventByIamUser, findEventById, findEventByProject, updateEvent } from './events.service';
 
 export class EventController {
@@ -64,6 +63,7 @@ export class EventController {
                 });
 
                 if(req.body.name === 'transaction_executed') {
+                    console.log(req.body)
                     // queue.add("transaction", {
                     //     hash: (req.body.data as any).hash,
                     //     iam: req.body.iamUser,

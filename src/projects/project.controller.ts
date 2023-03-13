@@ -7,7 +7,11 @@ import { createProject, findProjectById, findProjectByKey, findProjectByOwner, u
 export class ProjectController {
     public findProject = async (req: Request, res: Response) => {
         try {
-            if (!req.query.id && !req.query.key && !req.query.owner)
+            const user = res.locals.user
+
+            console.log(user)
+
+            if (!req.query.id && !req.query.key && !user)
                 throw new GenericError('IncompleteArgs', `please mention id or key or owner in query params`);
 
             let result: any;
@@ -16,8 +20,8 @@ export class ProjectController {
                 result = await findProjectById(req.query.id as string);
             } else if (req.query.key) {
                 result = await findProjectByKey(req.query.key as string);
-            } else if (req.query.owner) {
-                result = await findProjectByOwner(req.query.owner as string);
+            } else if (user) {
+                result = await findProjectByOwner(user.address as string);
             }
 
             res.status(200).send({
@@ -36,11 +40,13 @@ export class ProjectController {
 
     public createProject = async (req: Request<{}, {}, Project & { user: string }>, res: Response) => {
         try {
+            const user = res.locals.user
+
             const result = await createProject({
                 ...req.body,
                 user: {
                     connect: {
-                        address: req.body.user,
+                        address: user.address,
                     },
                 },
             });
