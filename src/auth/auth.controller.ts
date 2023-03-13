@@ -23,7 +23,7 @@ export class AuthController {
                 } catch (e) {
                     user = await createUser({
                         address,
-                        name
+                        name,
                     })
                 }
                 

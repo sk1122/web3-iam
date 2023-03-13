@@ -1,16 +1,11 @@
+import { prisma } from "../prisma";
 import { NextFunction, Request, Response } from "express";
 import * as jwt from "jsonwebtoken"
 import { GenericError, handleError } from "../error";
+import { findProjectByKey } from "../projects/project.service";
 import { findUserByAddress } from "../user/user.service";
 
-export const isAuthenticated = async (req: Request, res: Response, next: NextFunction) => {
-    // if(req.isAuthenticated()) next()
-    // else res.status(401).send({
-    //     status: 401,
-    //     timestamp: new Date().toISOString(),
-    //     reason: "Request unauthenticated"
-    // })
-    
+export const isAuthenticated = async (req: Request, res: Response, next: NextFunction) => {    
     try {
         const { authorization } = req.headers
 
@@ -27,8 +22,22 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
     
             next()
         } catch (e: any) {
-            if(e.name === 'ObjectNotFound') throw e
-            else throw new GenericError(`AuthorizationFailed`, `${token} is invalid`)
+            try {
+                const project = await prisma.project.findFirstOrThrow({
+                    include: {
+                        user: true
+                    },
+                    where: {
+                        key: req.headers['secret-key'] as string
+                    }
+                })
+                res.locals.user = project.user
+
+                next()
+            } catch (e: any) {
+                if(e.name === 'ObjectNotFound') throw e
+                else throw new GenericError(`AuthorizationFailed`, `${token} is invalid`)
+            }
         }
     } catch (e: any) {
         const error = handleError(e)
