@@ -8,27 +8,31 @@ import { findUserByAddress } from "../user/user.service";
 export const isAuthenticated = async (req: Request, res: Response, next: NextFunction) => {    
     try {
         const { authorization } = req.headers
+        const secretKey = req.headers['secret-key']
 
-        if(!authorization) throw new GenericError('JWTTokenNotInHeader', `jwt token not in header`)
+        if(!authorization && !secretKey) throw new GenericError('JWTTokenNotInHeader', `jwt token not in header`)
 
-        const token = authorization.split(" ")[1]
         try {
-            const payload = jwt.verify(token, process.env.JWT_ACCESS_SECRET as string) as jwt.JwtPayload;
-            
-            const user = await findUserByAddress(payload.user)
-    
-            res.locals.payload = payload
-            res.locals.user = user
-    
-            next()
+            if(authorization) {
+                const token = authorization.split(" ")[1]
+                const payload = jwt.verify(token, process.env.JWT_ACCESS_SECRET as string) as jwt.JwtPayload;
+                
+                const user = await findUserByAddress(payload.user)
+        
+                res.locals.payload = payload
+                res.locals.user = user
+        
+                next()
+            } else throw ""
         } catch (e: any) {
             try {
+                console.log(req.headers, "123")
                 const project = await prisma.project.findFirstOrThrow({
                     include: {
                         user: true
                     },
                     where: {
-                        key: req.headers['secret-key'] as string
+                        key: secretKey as string
                     }
                 })
                 res.locals.user = project.user
@@ -36,7 +40,7 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
                 next()
             } catch (e: any) {
                 if(e.name === 'ObjectNotFound') throw e
-                else throw new GenericError(`AuthorizationFailed`, `${token} is invalid`)
+                else throw new GenericError(`AuthorizationFailed`, `token is invalid`)
             }
         }
     } catch (e: any) {
