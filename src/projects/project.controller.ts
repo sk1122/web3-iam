@@ -38,9 +38,11 @@ export class ProjectController {
         }
     };
 
-    public createProject = async (req: Request<{}, {}, Project & { user: string }>, res: Response) => {
+    public createProject = async (req: Request<{}, {}, Project>, res: Response) => {
         try {
             const user = res.locals.user
+
+            console.log(user.address)
 
             const result = await createProject({
                 ...req.body,

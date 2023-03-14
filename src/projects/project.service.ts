@@ -51,6 +51,7 @@ export const createProject = async (data: Prisma.ProjectCreateInput) => {
 
         return project;
     } catch (e) {
+        console.log(e)
         throw new GenericError(`ProjectNotCreated`, `Not able to create project, more info - ${JSON.stringify(e)}`);
     }
 }

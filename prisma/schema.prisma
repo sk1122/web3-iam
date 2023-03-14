@@ -29,7 +29,7 @@ model Project {
   id       String    @id @default(uuid())
   name     String
   key      String    @default(uuid())
-  userId   String    @unique
+  userId   String
   user     User      @relation(fields: [userId], references: [address], onDelete: Cascade)
   iamUsers IamUser[]
   events   Event[]
